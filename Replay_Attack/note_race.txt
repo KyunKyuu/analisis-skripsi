@@ -1,0 +1,58 @@
+Sempurna! 👏 Hasil output dan ringkasan ini **jauh lebih baik, logis, dan kuat secara ilmiah**. Ini adalah hasil yang ideal dan sangat meyakinkan.
+
+Langsung ke pertanyaan Anda:
+
+### Apakah Skrip Sebelumnya Lebih Baik Dipertahankan?
+
+**Tidak.** Skrip yang menghasilkan output ini (yang baru) adalah versi yang **final dan harus Anda gunakan**. Buang skrip sebelumnya yang melaporkan 5 konfirmasi. Skrip yang baru ini secara akurat merefleksikan apa yang terjadi: 5 percobaan pengiriman, 1 konfirmasi final di blockchain. Ini menunjukkan metodologi yang matang.
+
+---
+
+### Bagaimana Cara Melaporkannya di Skripsi?
+
+Anda tidak perlu melaporkan hasil dari skrip yang salah (yang melaporkan 5 konfirmasi). Anggap saja itu bagian dari proses *development* dan *debugging* Anda. Dalam naskah skripsi, Anda hanya menyajikan metodologi dan hasil yang paling akurat dan final.
+
+Berikut cara menyajikannya di Bab 4 (Hasil dan Pembahasan) dengan sangat efektif:
+
+1.  **Sajikan Ringkasan Hasil:** Masukkan tabel ringkasan yang bersih dan jelas, mirip dengan yang dihasilkan oleh skrip Anda. Anda bisa membuatnya lebih ringkas untuk naskah.
+
+| Parameter Uji | Nilai |
+| :--- | :--- |
+| **ID Pengujian** | `20250720_121520` |
+| **RPC Provider** | Helius Devnet |
+| **Jumlah Permintaan Konkuren (N)** | 5 |
+| **Tanda Tangan Transaksi Unik** | `4fSzjj...3tD4aP` |
+| **Hasil Fase Pengiriman (RPC Level)** | |
+| &nbsp;&nbsp;&nbsp; Diterima oleh RPC | 5 |
+| &nbsp;&nbsp;&nbsp; Ditolak oleh RPC | 0 |
+| **Hasil Fase Konfirmasi (Blockchain Level)** | |
+| &nbsp;&nbsp;&nbsp; Konfirmasi Berhasil | **1** |
+| &nbsp;&nbsp;&nbsp; Duplikat Ditolak Jaringan | **4** |
+| **Waktu Konfirmasi Final** | 506.28 ms |
+| **Kesimpulan Uji** | **BERHASIL** |
+
+2.  **Bahas Hasilnya dengan Narasi yang Kuat:**
+    > "Pengujian simulasi *race condition* dilakukan dengan mengirimkan satu transaksi yang telah ditandatangani secara serentak sebanyak 5 kali ke jaringan Solana Devnet melalui RPC Helius. Seperti yang ditunjukkan pada Tabel [nomor tabel], kelima permintaan tersebut berhasil diterima di level RPC, menandakan tidak ada penolakan di gerbang awal jaringan."
+    >
+    > "Namun, hasil kunci terlihat pada fase konfirmasi final di *blockchain*. Hanya **satu** dari lima transaksi identik tersebut yang berhasil dikonfirmasi dan dicatat secara permanen, dengan waktu konfirmasi 506.28 milidetik. Empat transaksi lainnya secara implisit ditolak oleh protokol konsensus Solana sebagai duplikat, karena menggunakan tanda tangan yang sama dengan transaksi yang sudah diproses."
+    >
+    > "Temuan ini secara empiris membuktikan efektivitas mekanisme pertahanan Solana terhadap serangan *double-spending* melalui *race condition*. Arsitektur Solana mampu membedakan antara pengiriman permintaan ganda di level klien dan validasi keunikan transaksi di level konsensus, memastikan bahwa hanya satu transaksi yang dapat dieksekusi untuk setiap tanda tangan yang unik. Hal ini menegaskan jaminan integritas dan sifat atomik transaksi di jaringan Solana."
+
+---
+
+### Kritik Apalagi yang Bisa Dimasukkan ke Laporan?
+
+Sekarang setelah metodologi dan hasil Anda solid, Anda bisa menaikkan level analisis dengan menambahkan **kritik atau diskusi tentang batasan penelitian**. Ini akan menunjukkan kepada penguji bahwa Anda berpikir kritis.
+
+Masukkan ini di akhir Bab 4 (Pembahasan) atau di Bab 5 (Kesimpulan dan Saran).
+
+1.  **Kritik 1: Ketergantungan pada Kualitas RPC.**
+    > "**Batasan pada Variabilitas Kinerja RPC.** Hasil pengujian, khususnya pada waktu konfirmasi, sangat dipengaruhi oleh kinerja dan latensi dari RPC *provider* (Helius, Alchemy) yang digunakan. Pengujian yang dilakukan pada waktu yang berbeda atau dengan RPC yang berbeda mungkin menghasilkan variasi waktu, meskipun hasil akhir (1 transaksi berhasil, N-1 gagal) diperkirakan akan tetap konsisten. Penelitian ini tidak melakukan studi perbandingan komprehensif antar RPC, yang bisa menjadi area penelitian lanjutan."
+
+2.  **Kritik 2: Lingkungan Jaringan yang Tidak Sepenuhnya Adversarial.**
+    > "**Simulasi dalam Lingkungan Terkontrol.** Pengujian ini dilakukan di jaringan Devnet, yang meskipun mereplikasi fungsionalitas Mainnet, tidak memiliki tingkat kepadatan dan kondisi *adversarial* (serangan nyata) seperti pada jaringan utama. Beban pada validator Devnet cenderung lebih rendah. Oleh karena itu, sementara hasil ini sangat valid untuk membuktikan mekanisme protokol, kinerja di bawah tekanan ekstrem pada Mainnet bisa menjadi subjek observasi yang berbeda."
+
+3.  **Kritik 3: Cakupan Serangan Sederhana (Simple Transfer).**
+    > "**Fokus pada Transaksi Transfer Sederhana.** Vektor serangan yang diuji adalah duplikasi transaksi transfer SOL sederhana. Serangan *replay* di dunia nyata bisa jadi lebih kompleks, misalnya mencoba mengeksekusi ulang instruksi pada *smart contract* (program) yang memiliki *state* tertentu. Meskipun mekanisme `recentBlockhash` berlaku untuk semua jenis transaksi, penelitian ini tidak secara eksplisit menguji kasus interaksi program yang kompleks, yang bisa memiliki logika internal rentan terhadap jenis serangan lain."
+
+Dengan menambahkan kritik membangun seperti ini, Anda tidak hanya menyajikan hasil, tetapi juga menunjukkan pemahaman tentang **konteks, batasan, dan potensi pengembangan** dari penelitian Anda. Ini adalah nilai tambah yang sangat besar.

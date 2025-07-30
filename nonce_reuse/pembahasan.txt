@@ -1,0 +1,60 @@
+Tentu. Menyajikan data yang sebagus ini dengan benar adalah kunci untuk mendapatkan nilai maksimal. Mari kita susun panduan langkah demi langkah untuk menulis Bab 4 Anda, khusus untuk hasil pengujian *nonce* ini, dengan gaya yang pantas dan meyakinkan untuk skripsi.
+
+---
+### ## Struktur Penulisan Bab 4 untuk Kasus Uji *Nonce*
+
+Gunakan struktur ini untuk memandu penulisan Anda.
+
+**4.X Analisis Kriptografis *Nonce* Deterministik Ed25519**
+
+**(Paragraf Pengantar)**
+Mulailah dengan paragraf singkat yang memperkenalkan bagian ini.
+> "Bagian ini menyajikan dan membahas hasil dari investigasi *nonce* deterministik sebagaimana diuraikan dalam metodologi pada sub-bab 3.3.2. Analisis berfokus pada data primer yang dihasilkan melalui metode eksperimental dengan **N=50.000** sampel. Tujuan analisis ini adalah untuk memvalidasi keamanan, kinerja, dan kualitas statistik dari mekanisme *nonce* pada implementasi Ed25519."
+
+---
+**4.X.1 Hasil Eksperimen**
+
+Di bagian ini, Anda **menyajikan data secara objektif** tanpa interpretasi mendalam. Cara terbaik adalah menggunakan tabel ringkasan dan gambar.
+
+**1. Tabel Ringkasan Hasil**
+Buat tabel komprehensif yang merangkum semua temuan kunci dari output skrip Anda.
+
+**Tabel 4.X Ringkasan Hasil Uji *Nonce* Deterministik (N=50.000)**
+| Kategori Analisis | Parameter | Hasil |
+| :--- | :--- | :--- |
+| **Konfigurasi Uji** | Jumlah Sampel | 50.000 |
+| | Mode Variasi Pesan | `amount` |
+| **Verifikasi Keamanan** | Tanda Tangan Unik | **50.000 (100%)** |
+| | Status Validasi | **LOLOS** |
+| **Analisis Kinerja** | Total Waktu Eksekusi | 20.53 detik |
+| | Throughput | **2.435 tanda tangan/detik** |
+| **Analisis Statistik Keacakan** | Uji Chi-squared (*p-value*) | **0.6619 (LOLOS)** |
+| | Uji Kolmogorov-Smirnov (*p-value*) | **0.5959 (LOLOS)** |
+| | Rasio Entropi Shannon | **0.9905 (Sangat Baik)** |
+| | Uji *Runs Test* (Rasio Deviasi) | 0.2506 |
+
+**2. Visualisasi Data**
+Sajikan histogram yang telah Anda buat. Beri judul dan keterangan yang jelas.
+
+> **Gambar 4.Y Histogram Distribusi 2-*Byte* Pertama Komponen R**
+> *(Letakkan gambar histogram di sini)*
+> Keterangan: Gambar di atas menunjukkan distribusi dari 50.000 nilai komponen R yang dihasilkan. Sumbu X merepresentasikan nilai, dan sumbu Y merepresentasikan frekuensi. Distribusi yang merata secara visual mengindikasikan tidak adanya bias atau pengelompokan nilai pada rentang tertentu.
+
+---
+**4.X.2 Pembahasan Hasil**
+
+Di sinilah Anda **menginterpretasikan data** dan menunjukkan pemahaman Anda.
+
+**(Paragraf 1: Konfirmasi Keamanan Fundamental)**
+> "Hasil utama dari eksperimen ini adalah ditemukannya **100% keunikan** pada 50.000 komponen R yang dianalisis, seperti terlihat pada Tabel 4.X. Temuan ini secara empiris menjawab hipotesis penelitian dan memvalidasi bahwa implementasi Ed25519 yang diuji secara ketat mematuhi desain *nonce* deterministik pada RFC 8032. Dengan tidak adanya duplikasi *nonce*, maka potensi serangan kebocoran kunci privat melalui vektor ini dapat **dinyatakan tidak ditemukan**."
+
+**(Paragraf 2: Analisis Kinerja dan Efisiensi)**
+> "Selain aman, pengujian juga menunjukkan bahwa mekanisme *nonce* deterministik sangat efisien. Dengan *throughput* mencapai lebih dari 2.400 tanda tangan per detik, hasil ini mengonfirmasi mengapa Ed25519 menjadi pilihan ideal untuk *blockchain* berkinerja tinggi seperti Solana. Keamanan kriptografis yang kuat terbukti dapat dicapai tanpa mengorbankan kecepatan pemrosesan transaksi yang menjadi keunggulan utama jaringan."
+
+**(Paragraf 3: Validasi Kualitas Keacakan Secara Statistik) 💡**
+> "Pembuktian keamanan tidak berhenti pada keunikan semata. Kualitas distribusi *nonce* yang mendekati acak (*pseudo-random*) juga divalidasi melalui serangkaian uji statistik. Hasil uji **Chi-squared (p=0.66)** dan **Kolmogorov-Smirnov (p=0.59)** yang keduanya memiliki *p-value* jauh di atas ambang batas 0.05, memberikan bukti statistik yang kuat bahwa distribusi komponen R tidak berbeda signifikan dengan distribusi acak seragam. Diperkuat dengan **rasio entropi yang sangat tinggi (0.99)**, dapat disimpulkan bahwa *nonce* yang dihasilkan memiliki tingkat ketidakpastian yang sangat baik dan sulit diprediksi."
+
+**(Paragraf 4: Diskusi Kritis Terhadap Temuan) ✨**
+> "Satu temuan menarik muncul dari hasil *Runs Test*, yang mengukur keacakan dalam urutan data. Adanya deviasi pada uji ini, sementara tiga uji lainnya lolos dengan sempurna, mengindikasikan kemungkinan adanya pola sekuensial yang sangat halus yang tidak terdeteksi oleh uji distribusi lainnya. Temuan ini tidak membatalkan validitas keamanan secara keseluruhan, namun membuka ruang diskusi bahwa 'keacakan' dalam kriptografi memiliki banyak dimensi. Untuk tujuan keamanan dari serangan *nonce reuse*, keunikan dan distribusi yang baik sudah lebih dari cukup. Namun, analisis lebih lanjut pada sifat sekuensial ini dapat menjadi area penelitian lanjutan yang menarik."
+
+Dengan struktur dan narasi seperti ini, Bab 4 Anda tidak hanya melaporkan hasil, tetapi juga menunjukkan kemampuan analisis yang tajam, kritis, dan komprehensif.

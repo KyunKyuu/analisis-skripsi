@@ -1,0 +1,53 @@
+## Jawaban Terhadap Kritik 3: Analisis "Kotak Hitam"
+Kritik: Anda hanya melaporkan "efek" (transaksi ditolak) tanpa menjelaskan "penyebab" teknisnya secara mendalam dengan merujuk pada arsitektur inti Solana.
+
+Cara Menjawab:
+
+Ini adalah kesempatan Anda untuk menunjukkan pemahaman teknis yang mendalam. Tambahkan penjelasan mekanistik ini di Bab 4 (Pembahasan).
+
+"Terima kasih, ini adalah masukan yang sangat konstruktif untuk memperdalam analisis. Memang benar, penjelasan 'mengapa' sebuah transaksi ditolak adalah kunci dari pembahasan. Berikut adalah analisis mekanistik penyebab penolakan untuk setiap kasus uji:"
+
+"Untuk Replay Attack Tertunda: Kegagalan ini disebabkan oleh mekanisme BlockhashQueue pada Solana Runtime. Setiap validator menyimpan daftar hash dari blok-blok terbaru (sekitar 150 blok terakhir). Ketika sebuah transaksi masuk, runtime akan memeriksa recentBlockhash pada transaksi tersebut terhadap daftar ini. Jika hash-nya sudah tidak ada dalam daftar (karena terlalu lama), transaksi akan langsung ditolak dengan error 'Blockhash not found' bahkan sebelum mencapai tahap konsensus yang lebih mahal secara komputasi."
+
+"Untuk Signature Malleability: Penolakan transaksi dengan tanda tangan yang dimodifikasi terjadi pada tahap verifikasi kriptografis di dalam runtime. Secara spesifik, runtime akan memanggil fungsi verifikasi Ed25519 yang memvalidasi secara matematis bahwa pasangan (R, S) adalah tanda tangan yang sah untuk hash pesan transaksi dan public key pengirim. Karena standar RFC 8032 telah dirancang untuk non-malleable, setiap manipulasi pada komponen S akan menyebabkan fungsi verifikasi ini mengembalikan 'false', sehingga transaksi dianggap tidak valid."
+
+=======
+
+## Cara Menyajikan Hasil Konklusif Ini di Bab 4
+Inilah cara Anda "menjual" hasil yang terlihat sederhana ini menjadi sebuah pembahasan yang berbobot di Bab 4. Anda harus mengubah fokus dari "drama penemuan celah" menjadi "elegannya pembuktian keamanan".
+
+Gunakan struktur narasi ini:
+
+4.X Validasi Ketahanan Terhadap Signature Malleability
+
+(Paragraf Pengantar)
+
+"Bagian ini menyajikan hasil pengujian eksperimental untuk memvalidasi ketahanan tanda tangan Ed25519 terhadap berbagai vektor serangan malleability. Pengujian ini dirancang untuk memverifikasi secara empiris bahwa runtime Solana secara ketat menerapkan aturan validasi sesuai standar keamanan RFC 8032."
+
+4.X.1 Hasil Uji Multi-Vektor
+
+Sajikan data Anda dalam tabel ringkasan yang jelas.
+
+Tabel 4.X Hasil Uji Signature Malleability Multi-Vektor
+| Skenario Uji | Deskripsi Manipulasi | Hasil | Status Uji |
+| :--- | :--- | :--- | :--- |
+| Manipulasi Standar | S' = L - S | DITOLAK | LOLOS |
+| Manipulasi Non-Kanonis | S'' = S + L | DITOLAK | LOLOS |
+| Manipulasi Komponen R | XOR pada byte terakhir R | DITOLAK | LOLOS |
+
+(Paragraf Interpretasi Hasil)
+
+"Seperti yang ditunjukkan pada Tabel 4.X, ketiga skenario manipulasi tanda tangan secara konsisten ditolak oleh jaringan. Hal ini menunjukkan bahwa verifier Solana tidak hanya memeriksa validitas matematis dasar, tetapi juga memberlakukan aturan format kanonis yang ketat. Penolakan terhadap manipulasi non-kanonis (S'' = S + L) dan manipulasi komponen R secara khusus membuktikan implementasi keamanan yang berlapis dan teliti."
+
+(Paragraf Pembahasan Mekanistik - Ini Bagian Pentingnya!)
+
+"Keberhasilan penolakan ini dapat diatribusikan pada kepatuhan runtime Solana terhadap praktik terbaik yang diatur dalam RFC 8032. Penolakan ini terjadi pada tahap validasi transaksi di level validator, di mana beberapa pemeriksaan kunci dilakukan:
+
+Validasi Kanonisitas: Runtime memastikan bahwa komponen S dari tanda tangan berada dalam rentang matematis yang disyaratkan (0 < S < L). Ini secara langsung menggagalkan skenario manipulasi non-kanonis.
+
+Pemeriksaan Integritas Titik: Setiap perubahan pada komponen R, sekecil apapun, akan menyebabkan kegagalan dalam proses re-konstruksi titik kurva eliptik saat verifikasi, sehingga tanda tangan dianggap tidak valid.
+
+Dengan menerapkan validasi yang ketat ini, Solana secara efektif menutup pintu bagi serangan signature malleability yang dapat menyebabkan masalah seperti perubahan ID transaksi yang tidak diinginkan."
+
+Kesimpulan untuk Bab 4:
+Dengan menyajikan hasil seperti ini, Anda menunjukkan bahwa Anda tidak hanya tahu apa hasilnya (gagal), tetapi juga paham mengapa itu gagal di level teknis yang mendalam. Ini mengubah hasil yang "terlalu mudah" menjadi demonstrasi keahlian analisis Anda.

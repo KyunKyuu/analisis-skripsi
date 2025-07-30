@@ -1,0 +1,111 @@
+🔐 NONCE TESTER - VERIFIKASI KEUNIKAN ED25519 DI SOLANA
+======================================================================
+🎯 Tujuan: Verifikasi RFC 8032 Ed25519 deterministic nonce
+📊 Platform: Solana blockchain (mode lokal)
+🔬 Analisis: Keunikan, Kinerja, dan Distribusi Statistik
+📈 Jumlah sampel: 500,000
+🎲 Mode eksperimen: bit-flip
+📁 Output CSV: nonce_forensic_bit-flip_500k.csv
+📊 Histogram: bit-flip_500k.png
+======================================================================
+✅ Keypair berhasil dimuat
+📍 Public key: 3gWiP7kKdyiVgbJt5hudboTso1ZGNxfNPuqdQj767EKy
+📝 File log CSV dibuat: nonce_forensic_bit-flip_500k.csv
+
+🚀 MEMULAI PROSES PENANDATANGANAN DAN ANALISIS
+🎲 Mode: BIT-FLIP
+--------------------------------------------------
+⏳ Progress |██████████████████████████████████████████████████| 100.0% (500,000/500,000)
+
+✅ Proses penandatanganan selesai!
+📊 Memulai analisis hasil...
+
+======================================================================
+🔍 HASIL VERIFIKASI KEAMANAN
+======================================================================
+📈 Total signature yang dianalisis: 500,000
+🔢 Komponen R unik yang ditemukan: 499,056
+📊 Rasio keunikan: 499056/500000 (99.81%)
+❌ VERIFIKASI GAGAL: Ditemukan 944 duplikasi nonce!
+⚠️  Implementasi mungkin tidak sesuai dengan RFC 8032
+
+======================================================================
+⚡ HASIL ANALISIS KINERJA
+======================================================================
+🕒 Total waktu eksekusi: 95.09 detik
+⏱️  Waktu rata-rata per penandatanganan: 170.01 mikrodetik
+🚀 Throughput: 5258.10 signature/detik
+📊 Kinerja maksimal: 315486 signature/menit
+
+======================================================================
+📈 HASIL ANALISIS STATISTIK
+======================================================================
+✅ Histogram distribusi komponen R berhasil dibuat!
+📊 File histogram disimpan: bit-flip_500k.png
+🔍 Analisis visual menunjukkan distribusi 2 byte pertama komponen R
+📊 Statistik distribusi:
+   - Mean: 32741.79
+   - Median: 32694.00
+   - Std Dev: 18915.06
+   - Min: 0
+   - Max: 65535
+
+======================================================================
+🎲 HASIL ANALISIS MODE: BIT-FLIP
+======================================================================
+🎯 Mode Bit-Flip - Analisis sensitivitas bit
+🔧 Base amount: 1,000,000 lamports
+📍 Base recipient: Generated
+🔄 Total bit flips berhasil: 499,999/499,999
+📊 Efektivitas bit flip: 100.00%
+
+======================================================================
+🎲 ANALISIS KEACAKAN STATISTIK
+======================================================================
+🔍 Chi-squared Test for Uniformity:
+   Statistic: 294.1071
+   P-value: 0.046528
+   Result: FAILED: Distribusi menunjukkan pola non-random (p=0.046528 ≤ 0.05)
+   ❌ Distribusi nonce menunjukkan pola non-random
+
+🔍 Kolmogorov-Smirnov Test:
+   Statistic: 0.0012
+   P-value: 0.476899
+   Result: PASSED: Distribusi konsisten dengan uniform (KS p=0.476899 > 0.05)
+
+🔍 Entropy Analysis:
+   Shannon Entropy: 15.9023
+   Max Possible Entropy: 15.9990
+   Entropy Ratio: 0.9940
+   Entropy ratio: 0.9940 (closer to 1.0 = more random)
+
+🔍 Runs Test (Sequential Randomness):
+   Observed Runs: 2001148
+   Expected Runs: 2666666.33
+   Deviation Ratio: 0.2496
+   Runs deviation: 0.2496 (closer to 0 = more random)
+
+🎯 PENILAIAN KESELURUHAN KEACAKAN:
+   ⚠️  GOOD: 2/4 tes keacakan berhasil
+   🔒 Kualitas nonce memadai, tapi perlu investigasi lebih lanjut
+
+======================================================================
+📋 RINGKASAN EKSEKUSI
+======================================================================
+🎯 Konfigurasi eksperimen:
+   - Jumlah sampel: 500,000
+   - Mode: bit-flip
+   - Base amount: 1,000,000
+   - Progress interval: 100
+   - Verbose: False
+
+📁 File output:
+   - CSV log: nonce_forensic_bit-flip_500k.csv
+   - Histogram: bit-flip_500k.png
+
+🎉 Kesimpulan:
+   ❌ Ed25519 nonce verification: FAILED
+   ⚠️  Keamanan kriptografis: BERMASALAH
+   📜 Kepatuhan RFC 8032: TIDAK SESUAI
+   ⚡ Kinerja rata-rata: 170.01μs per signature
+   🚀 Throughput: 5258.10 signatures/detik

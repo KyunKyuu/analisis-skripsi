@@ -1,0 +1,110 @@
+🔐 NONCE TESTER - VERIFIKASI KEUNIKAN ED25519 DI SOLANA
+======================================================================
+🎯 Tujuan: Verifikasi RFC 8032 Ed25519 deterministic nonce
+📊 Platform: Solana blockchain (mode lokal)
+🔬 Analisis: Keunikan, Kinerja, dan Distribusi Statistik
+📈 Jumlah sampel: 500,000
+🎲 Mode eksperimen: random
+📁 Output CSV: nonce_forensic_random_500k.csv
+📊 Histogram: random_500k.png
+======================================================================
+✅ Keypair berhasil dimuat
+📍 Public key: 3gWiP7kKdyiVgbJt5hudboTso1ZGNxfNPuqdQj767EKy
+📝 File log CSV dibuat: nonce_forensic_random_500k.csv
+
+🚀 MEMULAI PROSES PENANDATANGANAN DAN ANALISIS
+🎲 Mode: RANDOM
+--------------------------------------------------
+⏳ Progress |██████████████████████████████████████████████████| 100.0% (500,000/500,000)
+
+✅ Proses penandatanganan selesai!
+📊 Memulai analisis hasil...
+
+======================================================================
+🔍 HASIL VERIFIKASI KEAMANAN
+======================================================================
+📈 Total signature yang dianalisis: 500,000
+🔢 Komponen R unik yang ditemukan: 500,000
+📊 Rasio keunikan: 500000/500000 (100.00%)
+✅ VERIFIKASI BERHASIL: Semua nonce bersifat unik!
+🎉 Implementasi Ed25519 Solana sesuai dengan RFC 8032
+✨ Tidak ditemukan duplikasi nonce deterministik
+
+======================================================================
+⚡ HASIL ANALISIS KINERJA
+======================================================================
+🕒 Total waktu eksekusi: 83.67 detik
+⏱️  Waktu rata-rata per penandatanganan: 150.98 mikrodetik
+🚀 Throughput: 5975.74 signature/detik
+📊 Kinerja maksimal: 358545 signature/menit
+
+======================================================================
+📈 HASIL ANALISIS STATISTIK
+======================================================================
+✅ Histogram distribusi komponen R berhasil dibuat!
+📊 File histogram disimpan: random_500k.png
+🔍 Analisis visual menunjukkan distribusi 2 byte pertama komponen R
+📊 Statistik distribusi:
+   - Mean: 32763.18
+   - Median: 32761.00
+   - Std Dev: 18919.53
+   - Min: 0
+   - Max: 65535
+
+======================================================================
+🎲 HASIL ANALISIS MODE: RANDOM
+======================================================================
+🎯 Mode Random - Variasi alamat dan jumlah acak
+✅ Setiap iterasi menggunakan recipient dan jumlah yang berbeda
+🔢 Range jumlah: 1,000,000 - 1,500,000 lamports
+
+======================================================================
+🎲 ANALISIS KEACAKAN STATISTIK
+======================================================================
+🔍 Chi-squared Test for Uniformity:
+   Statistic: 206.6002
+   P-value: 0.988277
+   Result: PASSED: Distribusi konsisten dengan uniform random (p=0.988277 > 0.05)
+   ✅ Distribusi nonce konsisten dengan keacakan
+
+🔍 Kolmogorov-Smirnov Test:
+   Statistic: 0.0006
+   P-value: 0.993448
+   Result: PASSED: Distribusi konsisten dengan uniform (KS p=0.993448 > 0.05)
+
+🔍 Entropy Analysis:
+   Shannon Entropy: 15.9048
+   Max Possible Entropy: 15.9993
+   Entropy Ratio: 0.9941
+   Entropy ratio: 0.9941 (closer to 1.0 = more random)
+
+🔍 Runs Test (Sequential Randomness):
+   Observed Runs: 1999056
+   Expected Runs: 2666666.33
+   Deviation Ratio: 0.2504
+   Runs deviation: 0.2504 (closer to 0 = more random)
+
+🎯 PENILAIAN KESELURUHAN KEACAKAN:
+   ✅ EXCELLENT: 3/4 tes keacakan berhasil
+   🔒 Kualitas nonce sangat baik untuk keamanan kriptografi
+
+======================================================================
+📋 RINGKASAN EKSEKUSI
+======================================================================
+🎯 Konfigurasi eksperimen:
+   - Jumlah sampel: 500,000
+   - Mode: random
+   - Base amount: 1,000,000
+   - Progress interval: 100
+   - Verbose: False
+
+📁 File output:
+   - CSV log: nonce_forensic_random_500k.csv
+   - Histogram: random_500k.png
+
+🎉 Kesimpulan:
+   ✅ Ed25519 nonce verification: PASSED
+   🔒 Keamanan kriptografis: TERJAMIN
+   📜 Kepatuhan RFC 8032: SESUAI
+   ⚡ Kinerja rata-rata: 150.98μs per signature
+   🚀 Throughput: 5975.74 signatures/detik

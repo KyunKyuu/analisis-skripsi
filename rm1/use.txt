@@ -1,0 +1,4 @@
+python drainer_data_downloader.py --address 3a4iF8f...k9l0m1n2b
+
+python drainer_checker.py --file <ALAMAT>_transactions.csv --address <ALAMAT_SOLANA>
+

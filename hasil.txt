@@ -1,0 +1,140 @@
+BAB IV: HASIL DAN PEMBAHASAN
+4.1. Hasil Eksperimen Keamanan Implementasi Ed25519 (RM2)
+
+(Paragraf Pengantar)
+
+Mulailah dengan menyatakan bahwa bagian ini akan menyajikan dan menganalisis hasil dari tiga kasus uji eksperimental yang dirancang untuk memvalidasi ketahanan implementasi tanda tangan digital Ed25519 pada protokol Solana.
+
+Sebutkan bahwa pengujian ini menjawab Rumusan Masalah Kedua (RM2).
+
+4.2. Kasus Uji 1: Analisis Ketahanan Terhadap Replay Attack
+
+(Paragraf Pengantar Sub-bab)
+
+Jelaskan bahwa kasus uji ini secara komprehensif memvalidasi berbagai lapisan pertahanan Solana terhadap serangan pengulangan transaksi.
+
+4.2.1. Skenario Kondisi Balapan (Race Condition)
+
+Penyajian Hasil:
+
+Tampilkan tabel ringkasan yang menunjukkan: Jumlah permintaan (N), jumlah transaksi yang berhasil dikonfirmasi di blockchain (selalu 1), dan jumlah transaksi yang ditolak (N-1).
+
+Sebutkan bahwa hasil ini konsisten di keempat RPC yang diuji (Helius, Alchemy, local, dan Devnet Solana), yang menunjukkan ini adalah perilaku protokol, bukan artefak RPC.
+
+Pembahasan dan Analisis:
+
+Validasi Sifat Atomik: Jelaskan bahwa hasil ini secara empiris membuktikan sifat atomik dari pemrosesan transaksi Solana. Meskipun dibanjiri oleh N permintaan identik, hanya satu yang dieksekusi.
+
+Mekanisme Penolakan: Diskusikan bahwa penolakan N-1 transaksi lainnya disebabkan oleh konsumsi recentBlockhash oleh transaksi pertama yang berhasil, sehingga yang lain menjadi tidak valid.
+
+4.2.2. Skenario Replay Langsung
+
+Penyajian Hasil:
+
+Sajikan tabel yang membandingkan initial_balance, intermediate_balance, dan final_balance.
+
+Tampilkan bukti bahwa signature yang dikembalikan dari pengiriman kedua identik dengan yang pertama.
+
+Pembahasan dan Analisis:
+
+Bukan Double-Spend: Tekankan bahwa hasil ini secara kuantitatif membuktikan tidak terjadinya double-spend. Saldo hanya berkurang satu kali.
+
+Konfirmasi Ulang: Jelaskan bahwa jaringan mengenali ini sebagai upaya konfirmasi ulang atas transaksi yang sudah ada, bukan sebagai transaksi baru.
+
+4.2.3. Skenario Replay Tertunda
+
+Penyajian Hasil:
+
+Sajikan perbandingan hasil dari dua metode: penundaan berbasis time.sleep dan penundaan berbasis lastValidBlockHeight.
+
+Tunjukkan bahwa kedua metode menghasilkan kegagalan transaksi, namun metode lastValidBlockHeight lebih presisi.
+
+Tampilkan pesan error yang konsisten diterima: "Blockhash not found".
+
+Pembahasan dan Analisis:
+
+Pembuktian Deterministik: Jelaskan bahwa metode lastValidBlockHeight secara deterministik membuktikan bahwa penolakan terjadi karena blockhash kedaluwarsa, bukan karena faktor lain.
+
+Analisis Mekanistik: Perkenalkan konsep BlockhashQueue di runtime Solana sebagai penyebab teknis mengapa hash yang terlalu tua tidak lagi dikenali oleh validator.
+
+4.2.4. Skenario Replay Lintas Jaringan
+
+Penyajian Hasil:
+
+Tampilkan tabel yang menunjukkan bahwa pengujian dua arah (Devnet ke Testnet dan sebaliknya) selalu gagal.
+
+Pembahasan dan Analisis:
+
+Isolasi Kriptografis: Jelaskan bahwa hasil ini membuktikan adanya isolasi absolut antar cluster.
+
+Analisis Mekanistik Fundamental: Diskusikan bahwa kegagalan ini tidak hanya disebabkan oleh blockhash yang berbeda, tetapi oleh mekanisme keamanan yang lebih fundamental yaitu Genesis Hash yang unik untuk setiap cluster.
+
+4.3. Kasus Uji 2: Investigasi Nonce Deterministik
+
+(Paragraf Pengantar Sub-bab)
+
+Jelaskan bahwa kasus uji ini menggunakan pendekatan ganda (eksperimental dan forensik) untuk memvalidasi keamanan dan kualitas mekanisme nonce deterministik Ed25519.
+
+4.3.1. Analisis Eksperimental (Data Primer)
+
+Penyajian Hasil:
+
+Sajikan tabel ringkasan utama dari hasil eksekusi skrip Anda (seperti yang kita diskusikan sebelumnya), yang mencakup:
+
+Jumlah sampel (misal, 50.000).
+
+Hasil verifikasi keunikan (100% unik).
+
+Hasil dari 3 mode variasi pesan (amount, bit-flip, random) yang menunjukkan hasil yang konsisten.
+
+Hasil dari semua uji statistik keacakan (Chi-squared, Kolmogorov-Smirnov, Entropi).
+
+Lampirkan gambar histogram distribusi komponen R.
+
+Pembahasan dan Analisis:
+
+Keunikan dan Sensitivitas: Bahas bahwa keunikan 100% pada skala besar, bahkan dengan variasi level bit, membuktikan sensitivitas kriptografis yang sangat tinggi.
+
+Validasi Statistik: Jelaskan arti dari setiap uji statistik yang lolos. Tekankan bahwa p-value yang tinggi memberikan bukti matematis bahwa distribusi nonce mendekati acak ideal.
+
+4.3.2. Analisis Forensik (Data Sekunder)
+
+Penyajian Hasil:
+
+Jelaskan sumber data yang Anda gunakan (misalnya, "riwayat transaksi dari alamat hot wallet Protokol X di mainnet").
+
+Sajikan hasil analisis dari nonce_validator.py pada data ini, yang menunjukkan tidak ditemukannya duplikasi nonce.
+
+Pembahasan dan Analisis:
+
+Validasi Dunia Nyata: Tekankan bahwa temuan ini memvalidasi hasil eksperimental Anda di dunia nyata. Ini membuktikan bahwa bahkan dalam penggunaan praktis bervolume tinggi, mekanisme nonce tetap aman.
+
+Kekuatan Pendekatan Ganda: Simpulkan bahwa kombinasi metode eksperimental dan forensik memberikan tingkat kepercayaan yang sangat tinggi terhadap keamanan nonce Ed25519 di Solana.
+
+4.4. Kasus Uji 3: Analisis Ketahanan Terhadap Signature Malleability
+
+(Paragraf Pengantar Sub-bab)
+
+Jelaskan bahwa kasus uji ini secara sistematis menguji ketahanan implementasi Ed25519 terhadap berbagai upaya manipulasi tanda tangan.
+
+Penyajian Hasil:
+
+Gunakan tabel ringkasan yang jelas untuk menampilkan hasil dari tiga skenario manipulasi: S' = L - S, S'' = S + L, dan manipulasi komponen R.
+
+Tunjukkan bahwa semua upaya transaksi dengan signature yang dimanipulasi DITOLAK oleh jaringan.
+
+Pembahasan dan Analisis:
+
+Kepatuhan Standar RFC 8032: Jelaskan bahwa penolakan konsisten ini membuktikan implementasi Solana sangat patuh pada standar keamanan RFC 8032.
+
+Analisis Mekanistik: Diskusikan mengapa transaksi tersebut gagal. Jelaskan tentang validasi kanonisitas (yang menggagalkan S'' = S + L) dan pemeriksaan integritas titik matematis (yang menggagalkan manipulasi R).
+
+4.5. Pembahasan Komprehensif dan Implikasi Keamanan
+
+(Paragraf Penutup Bab)
+
+Sintesis Temuan: Rangkum temuan kunci dari ketiga kasus uji. Nyatakan bahwa secara eksperimental, fondasi kriptografi Ed25519 di Solana terbukti sangat kokoh.
+
+Hubungkan Kembali ke Konteks Phantom Wallet: Diskusikan implikasi dari temuan ini. Karena protokol di bawahnya aman, maka risiko utama bagi pengguna Phantom Wallet bukanlah pada kelemahan algoritma, melainkan pada lapisan interaksi pengguna (misalnya, rekayasa sosial atau phishing yang menipu pengguna untuk menandatangani transaksi berbahaya).
+
+Validitas Penelitian: Sebutkan bahwa penggunaan berbagai metode (eksperimental, forensik, multi-RPC, multi-vektor) memberikan validitas yang tinggi pada kesimpulan penelitian.

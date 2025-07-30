@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Test reCAPTCHA</title>
+  <script src="https://www.google.com/recaptcha/api.js?render=6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></script>
+</head>
+
+<body>
+  <script>
+    grecaptcha.ready(function () {
+      grecaptcha.execute('6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI', { action: 'login' }).then(function (token) {
+        console.log("Token:", token);
+        // Salin token ini ke Postman/backend untuk testing
+      });
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,50 @@
+2025-07-20 19:19:41,093 - INFO - 🚀 Starting IMPROVED Race Condition Test with Confirmation - Run ID: 20250720_121941
+2025-07-20 19:19:42,572 - INFO - HTTP Request: POST https://devnet.helius-rpc.com/?api-key=fadc60cf-6297-4317-acc8-9f6441ff7025 "HTTP/1.1 200 OK"
+2025-07-20 19:19:42,574 - INFO - ✅ Connected to: https://devnet.helius-rpc.com/?api-key=fadc60cf-6297-4317-acc8-9f6441ff7025
+2025-07-20 19:19:42,575 - INFO - ✅ Keypair loaded: 3gWiP7kKdyiVgbJt5hudboTso1ZGNxfNPuqdQj767EKy
+2025-07-20 19:19:42,575 - INFO - 🎯 Target recipient: 3gWiP7kKdyiVgbJt5hudboTso1ZGNxfNPuqdQj767EKy
+2025-07-20 19:19:42,877 - INFO - HTTP Request: POST https://devnet.helius-rpc.com/?api-key=fadc60cf-6297-4317-acc8-9f6441ff7025 "HTTP/1.1 200 OK"
+2025-07-20 19:19:42,879 - INFO - 💰 Current balance: 5.393909 SOL
+2025-07-20 19:19:42,880 - INFO - 🔨 Creating transaction RIGHT BEFORE concurrent sends...
+2025-07-20 19:19:43,185 - INFO - HTTP Request: POST https://devnet.helius-rpc.com/?api-key=fadc60cf-6297-4317-acc8-9f6441ff7025 "HTTP/1.1 200 OK"
+2025-07-20 19:19:43,186 - INFO - 🔗 Using blockhash: AqL77cAFi7fjNfJGWC4r7heLfPrk8TWGqt8jKaybFjzt
+2025-07-20 19:19:43,187 - INFO - ✅ Transaction created for 3gWiP7kKdyiVgbJt5hudboTso1ZGNxfNPuqdQj767EKy
+2025-07-20 19:19:43,188 - INFO - 📝 Signature: 23MZDgEfAYSzfsg98uJJ78jCsHr8pibhgXtuRApNDaePPBF3ESXncooAZKojFqN2pkiH9AbtaLXjLSVGhL8ekvG1
+2025-07-20 19:19:43,188 - INFO - 📋 This transaction will be sent 5 times:
+2025-07-20 19:19:43,188 - INFO -    🔑 Signature: 23MZDgEfAYSzfsg98uJJ78jCsHr8pibhgXtuRApNDaePPBF3ESXncooAZKojFqN2pkiH9AbtaLXjLSVGhL8ekvG1
+2025-07-20 19:19:43,189 - INFO - ⚡ Setting up 5 concurrent tasks with barrier...
+2025-07-20 19:19:43,189 - INFO - 🚀 Launching concurrent requests with barrier synchronization...
+2025-07-20 19:19:43,189 - INFO - ⏱️  All tasks will start at EXACTLY the same time...
+2025-07-20 19:19:43,190 - INFO - 🔍 Each task will check actual blockchain confirmation...
+2025-07-20 19:19:43,190 - INFO - 🚀 Task 1: Waiting at barrier...
+2025-07-20 19:19:43,191 - INFO - 🚀 Task 2: Waiting at barrier...
+2025-07-20 19:19:43,192 - INFO - 🚀 Task 3: Waiting at barrier...
+2025-07-20 19:19:43,192 - INFO - 🚀 Task 4: Waiting at barrier...
+2025-07-20 19:19:43,193 - INFO - 🚀 Task 5: Waiting at barrier...
+2025-07-20 19:19:43,193 - INFO - 🚀 Task 5: SIMULTANEOUS SEND - 23MZDgEfAYSzfsg98uJJ78jCsHr8pibhgXtuRApNDaePPBF3ESXncooAZKojFqN2pkiH9AbtaLXjLSVGhL8ekvG1
+2025-07-20 19:19:43,194 - INFO - 🚀 Task 1: SIMULTANEOUS SEND - 23MZDgEfAYSzfsg98uJJ78jCsHr8pibhgXtuRApNDaePPBF3ESXncooAZKojFqN2pkiH9AbtaLXjLSVGhL8ekvG1
+2025-07-20 19:19:43,195 - INFO - 🚀 Task 2: SIMULTANEOUS SEND - 23MZDgEfAYSzfsg98uJJ78jCsHr8pibhgXtuRApNDaePPBF3ESXncooAZKojFqN2pkiH9AbtaLXjLSVGhL8ekvG1
+2025-07-20 19:19:43,197 - INFO - 🚀 Task 3: SIMULTANEOUS SEND - 23MZDgEfAYSzfsg98uJJ78jCsHr8pibhgXtuRApNDaePPBF3ESXncooAZKojFqN2pkiH9AbtaLXjLSVGhL8ekvG1
+2025-07-20 19:19:43,198 - INFO - 🚀 Task 4: SIMULTANEOUS SEND - 23MZDgEfAYSzfsg98uJJ78jCsHr8pibhgXtuRApNDaePPBF3ESXncooAZKojFqN2pkiH9AbtaLXjLSVGhL8ekvG1
+2025-07-20 19:19:43,484 - INFO - HTTP Request: POST https://devnet.helius-rpc.com/?api-key=fadc60cf-6297-4317-acc8-9f6441ff7025 "HTTP/1.1 200 OK"
+2025-07-20 19:19:43,486 - INFO - ⏳ Task 5: Checking confirmation status...
+2025-07-20 19:19:43,594 - INFO - HTTP Request: POST https://devnet.helius-rpc.com/?api-key=fadc60cf-6297-4317-acc8-9f6441ff7025 "HTTP/1.1 200 OK"
+2025-07-20 19:19:43,596 - INFO - HTTP Request: POST https://devnet.helius-rpc.com/?api-key=fadc60cf-6297-4317-acc8-9f6441ff7025 "HTTP/1.1 200 OK"
+2025-07-20 19:19:43,598 - INFO - ⏳ Task 3: Checking confirmation status...
+2025-07-20 19:19:43,600 - INFO - HTTP Request: POST https://devnet.helius-rpc.com/?api-key=fadc60cf-6297-4317-acc8-9f6441ff7025 "HTTP/1.1 200 OK"
+2025-07-20 19:19:43,602 - INFO - ⏳ Task 4: Checking confirmation status...
+2025-07-20 19:19:43,604 - INFO - ⏳ Task 1: Checking confirmation status...
+2025-07-20 19:19:43,611 - INFO - HTTP Request: POST https://devnet.helius-rpc.com/?api-key=fadc60cf-6297-4317-acc8-9f6441ff7025 "HTTP/1.1 200 OK"
+2025-07-20 19:19:43,613 - INFO - ⏳ Task 2: Checking confirmation status...
+2025-07-20 19:19:43,905 - INFO - HTTP Request: POST https://devnet.helius-rpc.com/?api-key=fadc60cf-6297-4317-acc8-9f6441ff7025 "HTTP/1.1 200 OK"
+2025-07-20 19:19:43,910 - WARNING - ❌ Task 5: Transaction NOT FOUND on blockchain - 23MZDgEfAYSzfsg98uJJ78jCsHr8pibhgXtuRApNDaePPBF3ESXncooAZKojFqN2pkiH9AbtaLXjLSVGhL8ekvG1
+2025-07-20 19:19:44,003 - INFO - HTTP Request: POST https://devnet.helius-rpc.com/?api-key=fadc60cf-6297-4317-acc8-9f6441ff7025 "HTTP/1.1 200 OK"
+2025-07-20 19:19:44,006 - INFO - HTTP Request: POST https://devnet.helius-rpc.com/?api-key=fadc60cf-6297-4317-acc8-9f6441ff7025 "HTTP/1.1 200 OK"
+2025-07-20 19:19:44,007 - WARNING - ❌ Task 4: Transaction NOT FOUND on blockchain - 23MZDgEfAYSzfsg98uJJ78jCsHr8pibhgXtuRApNDaePPBF3ESXncooAZKojFqN2pkiH9AbtaLXjLSVGhL8ekvG1
+2025-07-20 19:19:44,009 - INFO - HTTP Request: POST https://devnet.helius-rpc.com/?api-key=fadc60cf-6297-4317-acc8-9f6441ff7025 "HTTP/1.1 200 OK"
+2025-07-20 19:19:44,011 - INFO - HTTP Request: POST https://devnet.helius-rpc.com/?api-key=fadc60cf-6297-4317-acc8-9f6441ff7025 "HTTP/1.1 200 OK"
+2025-07-20 19:19:44,013 - WARNING - ❌ Task 1: Transaction NOT FOUND on blockchain - 23MZDgEfAYSzfsg98uJJ78jCsHr8pibhgXtuRApNDaePPBF3ESXncooAZKojFqN2pkiH9AbtaLXjLSVGhL8ekvG1
+2025-07-20 19:19:44,014 - WARNING - ❌ Task 3: Transaction NOT FOUND on blockchain - 23MZDgEfAYSzfsg98uJJ78jCsHr8pibhgXtuRApNDaePPBF3ESXncooAZKojFqN2pkiH9AbtaLXjLSVGhL8ekvG1
+2025-07-20 19:19:44,015 - WARNING - ❌ Task 2: Transaction NOT FOUND on blockchain - 23MZDgEfAYSzfsg98uJJ78jCsHr8pibhgXtuRApNDaePPBF3ESXncooAZKojFqN2pkiH9AbtaLXjLSVGhL8ekvG1
+2025-07-20 19:19:44,018 - INFO - 📄 Results written to race_condition_log.csv
+2025-07-20 19:19:44,027 - INFO - 🎉 Race Condition Test Complete.
