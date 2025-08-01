@@ -3,10 +3,10 @@
 drainer_heuristic_validator.py
 
 Script untuk menganalisis data transaksi dan memvalidasi apakah alamat memenuhi
-kriteria heuristik sebagai drain wallet dengan klasifikasi tipologi serangan.
+kriteria heuristik sebagai drain wallet.
 
 Author: Expert Python Developer
-Purpose: RM 1 - Analisis Pola Transaksi Drain Wallet dengan Klasifikasi Tipologi
+Purpose: RM 1 - Analisis Pola Transaksi Drain Wallet
 """
 
 import argparse
@@ -25,15 +25,10 @@ import json
 MIN_UNIQUE_VICTIMS = 20
 
 # Heuristik 2: Pola Konsolidasi Cepat  
-MAX_CONSOLIDATION_DELAY_HOURS = 0.45
+MAX_CONSOLIDATION_DELAY_HOURS = 0.40
 
 # Heuristik 3: Diversitas Aset
 MIN_ASSET_DIVERSITY = 3
-
-# Konfigurasi Klasifikasi Tipologi Serangan
-MASS_DRAINER_VICTIM_THRESHOLD = 50
-SOPHISTICATED_LAUNDERING_OUTGOING_THRESHOLD = 10
-MULTI_VECTOR_UNIQUE_ASSETS_THRESHOLD = 5
 
 # =============================================================================
 # FUNGSI UTILITAS
@@ -207,77 +202,17 @@ def analyze_asset_diversity_pattern(df: pd.DataFrame, target_address: str) -> Tu
     return is_satisfied, unique_assets, explanation
 
 # =============================================================================
-# FUNGSI KLASIFIKASI TIPOLOGI SERANGAN
-# =============================================================================
-
-def classify_attack_typology(df: pd.DataFrame, target_address: str, heuristic_results: Dict[str, Any]) -> str:
-    """
-    Mengklasifikasikan tipologi serangan berdasarkan pola transaksi.
-    
-    Args:
-        df (pd.DataFrame): DataFrame transaksi
-        target_address (str): Alamat drainer
-        heuristic_results (Dict[str, Any]): Hasil analisis heuristik
-        
-    Returns:
-        str: Tipologi serangan yang teridentifikasi
-    """
-    log_info("Melakukan klasifikasi tipologi serangan...")
-    
-    # Ambil data untuk analisis klasifikasi
-    unique_victims = heuristic_results['heuristic_1']['value']
-    unique_assets = heuristic_results['heuristic_3']['value']
-    
-    # Hitung jumlah alamat tujuan transaksi keluar yang unik
-    outgoing_txs = df[df['source_address'] == target_address]
-    unique_outgoing_addresses = outgoing_txs['destination_address'].nunique()
-    
-    # Logika klasifikasi dengan prioritas
-    typologies = []
-    
-    # 1. Mass Drainer Attack - prioritas tinggi
-    if unique_victims >= MASS_DRAINER_VICTIM_THRESHOLD:
-        typologies.append("Mass Drainer Attack")
-    
-    # 2. Sophisticated Laundering - berdasarkan pola distribusi keluar
-    if unique_outgoing_addresses >= SOPHISTICATED_LAUNDERING_OUTGOING_THRESHOLD:
-        typologies.append("Sophisticated Laundering")
-    
-    # 3. Multi-Vector Attack - berdasarkan diversitas aset yang sangat tinggi
-    if unique_assets >= MULTI_VECTOR_UNIQUE_ASSETS_THRESHOLD:
-        typologies.append("Multi-Vector Attack")
-    
-    # Tentukan tipologi final
-    if len(typologies) > 1:
-        # Jika terdapat multiple indikator, gabungkan
-        attack_typology = " + ".join(typologies)
-    elif len(typologies) == 1:
-        attack_typology = typologies[0]
-    else:
-        attack_typology = "General Drainer Attack"
-    
-    log_info(f"Tipologi serangan teridentifikasi: {attack_typology}")
-    
-    # Log detail untuk debugging
-    log_info(f"Detail klasifikasi:")
-    log_info(f"  - Unique Victims: {unique_victims} (Mass threshold: {MASS_DRAINER_VICTIM_THRESHOLD})")
-    log_info(f"  - Unique Outgoing Addresses: {unique_outgoing_addresses} (Laundering threshold: {SOPHISTICATED_LAUNDERING_OUTGOING_THRESHOLD})")
-    log_info(f"  - Unique Assets: {unique_assets} (Multi-vector threshold: {MULTI_VECTOR_UNIQUE_ASSETS_THRESHOLD})")
-    
-    return attack_typology
-
-# =============================================================================
 # FUNGSI GENERASI GRAF JSON
 # =============================================================================
 
-def generate_graph_data(df: pd.DataFrame, target_address: str, attack_typology: str) -> Dict[str, Any]:
+def generate_graph_data(df: pd.DataFrame, target_address: str, heuristic_results: Dict[str, Any] = None) -> Dict[str, Any]:
     """
     Menghasilkan data graf dalam format JSON untuk visualisasi 3D.
     
     Args:
         df (pd.DataFrame): DataFrame transaksi
         target_address (str): Alamat drainer yang menjadi pusat graf
-        attack_typology (str): Tipologi serangan yang teridentifikasi
+        heuristic_results (Dict[str, Any], optional): Hasil analisis heuristik untuk menentukan tipologi serangan
         
     Returns:
         Dict[str, Any]: Data graf dalam format yang sesuai untuk library 3D
@@ -344,6 +279,11 @@ def generate_graph_data(df: pd.DataFrame, target_address: str, attack_typology: 
             "total_amount": float(total_amount) if pd.notna(total_amount) else 0
         })
     
+    # Tentukan tipologi serangan berdasarkan hasil heuristik
+    attack_typology = "Unknown Attack Pattern"
+    if heuristic_results is not None:
+        attack_typology = determine_attack_typology(heuristic_results)
+    
     graph_data = {
         "nodes": nodes,
         "links": links,
@@ -358,6 +298,38 @@ def generate_graph_data(df: pd.DataFrame, target_address: str, attack_typology: 
     
     log_info(f"Graf berhasil dibuat: {len(nodes)} nodes, {len(links)} links")
     return graph_data
+
+def determine_attack_typology(heuristic_results: Dict[str, Any]) -> str:
+    """
+    Menentukan tipologi serangan berdasarkan hasil analisis heuristik.
+    
+    Args:
+        heuristic_results (Dict[str, Any]): Hasil analisis heuristik
+        
+    Returns:
+        str: Tipologi serangan yang terdeteksi
+    """
+    typologies = []
+    
+    # Cek Mass Drainer Attack (Heuristik 1: Massive Reception Pattern)
+    if heuristic_results['heuristic_1']['satisfied']:
+        typologies.append("Mass Drainer Attack")
+    
+    # Cek Sophisticated Laundering (Heuristik 2: Fast Consolidation Pattern)
+    if heuristic_results['heuristic_2']['satisfied']:
+        typologies.append("Sophisticated Laundering")
+    
+    # Cek Multi-Vector Attack (Heuristik 3: Asset Diversity Pattern)
+    if heuristic_results['heuristic_3']['satisfied']:
+        typologies.append("Multi-Vector Attack")
+    
+    # Gabungkan tipologi dengan " + " jika lebih dari satu
+    if len(typologies) == 0:
+        return "Unknown Attack Pattern"
+    elif len(typologies) == 1:
+        return typologies[0]
+    else:
+        return " + ".join(typologies)
 
 def save_graph_json(graph_data: Dict[str, Any], target_address: str) -> str:
     """
@@ -484,10 +456,6 @@ def print_analysis_report(result: Dict[str, Any]) -> None:
     print(f"Alamat ini {conclusion} sebagai Drain Wallet")
     print(f"({satisfied_count} dari 3 kriteria terpenuhi)")
     
-    # Tampilkan tipologi serangan jika ada
-    if result['is_drainer'] and 'attack_typology' in result:
-        print(f"Tipologi Serangan Teridentifikasi: {result['attack_typology']}")
-    
     if result['is_drainer']:
         print("\n⚠️  REKOMENDASI: Alamat ini menunjukkan pola yang konsisten dengan")
         print("   aktivitas drain wallet dan layak untuk investigasi lebih lanjut.")
@@ -506,7 +474,7 @@ def main():
     Fungsi utama program.
     """
     parser = argparse.ArgumentParser(
-        description="Analisis heuristik untuk validasi drain wallet dengan klasifikasi tipologi serangan"
+        description="Analisis heuristik untuk validasi drain wallet"
     )
     parser.add_argument(
         "--file",
@@ -528,11 +496,6 @@ def main():
         # Jalankan analisis heuristik
         result = perform_heuristic_analysis(df, args.address, args.file)
         
-        # Jika validasi drainer terpenuhi, lakukan klasifikasi tipologi
-        if result['is_drainer']:
-            attack_typology = classify_attack_typology(df, args.address, result)
-            result['attack_typology'] = attack_typology
-        
         # Tampilkan laporan
         print_analysis_report(result)
         
@@ -540,8 +503,8 @@ def main():
         if result['is_drainer']:
             log_info("Validasi drainer terpenuhi! Membuat file graf JSON...")
             
-            # Generate data graf dengan tipologi serangan
-            graph_data = generate_graph_data(df, args.address, result['attack_typology'])
+            # Generate data graf dengan hasil heuristik
+            graph_data = generate_graph_data(df, args.address, result)
             
             # Simpan ke file JSON
             json_filepath = save_graph_json(graph_data, args.address)
@@ -550,7 +513,7 @@ def main():
             print("🎯 FILE GRAF JSON TELAH DIBUAT")
             print("="*60)
             print(f"📁 File Path: {json_filepath}")
-            print(f"🏷️  Attack Typology: {graph_data['metadata']['attack_typology']}")
+            print(f"🏷️ Attack Typology: {graph_data['metadata']['attack_typology']}")
             print(f"📊 Total Nodes: {graph_data['metadata']['total_nodes']}")
             print(f"🔗 Total Links: {graph_data['metadata']['total_links']}")
             print(f"⏰ Generated At: {graph_data['metadata']['generated_at']}")
