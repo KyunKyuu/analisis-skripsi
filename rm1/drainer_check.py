@@ -202,10 +202,100 @@ def analyze_asset_diversity_pattern(df: pd.DataFrame, target_address: str) -> Tu
     return is_satisfied, unique_assets, explanation
 
 # =============================================================================
+# FUNGSI PERHITUNGAN METRIK BERBASIS DATA
+# =============================================================================
+
+def calculate_all_metrics(df: pd.DataFrame, drainer_address: str) -> Dict[str, Any]:
+    """
+    Menghitung semua metrik kuantitatif berdasarkan data transaksi aktual.
+    
+    Args:
+        df (pd.DataFrame): DataFrame transaksi
+        drainer_address (str): Alamat drainer yang dianalisis
+        
+    Returns:
+        Dict[str, Any]: Dictionary berisi semua metrik yang dihitung dari data
+    """
+    log_info("Menghitung metrik kuantitatif dari data transaksi...")
+    
+    # Filter transaksi masuk ke drainer
+    incoming_txs = df[df['destination_address'] == drainer_address]
+    
+    # 1. Total Korban Terdampak
+    total_victims = incoming_txs['source_address'].nunique()
+    log_info(f"Total korban terdampak: {total_victims}")
+    
+    # 2. Indeks Ledakan Transaksi (Burst Index)
+    burst_index = 0
+    if not incoming_txs.empty:
+        # Pastikan timestamp dalam format datetime
+        incoming_txs_copy = incoming_txs.copy()
+        incoming_txs_copy['hour_floor'] = incoming_txs_copy['timestamp_utc'].dt.floor('H')
+        
+        # Kelompokkan per jam dan hitung korban unik per jam
+        hourly_victims = incoming_txs_copy.groupby('hour_floor')['source_address'].nunique()
+        burst_index = hourly_victims.max() if not hourly_victims.empty else 0
+    
+    log_info(f"Indeks ledakan transaksi: {burst_index}")
+    
+    # 3. Estimasi Kerugian SOL & USDC
+    total_sol_stolen = 0.0
+    total_usdc_stolen = 0.0
+    
+    if not incoming_txs.empty:
+        # SOL Native Transfer
+        sol_txs = incoming_txs[
+            (incoming_txs['transaction_type'] == 'NATIVE_TRANSFER') |
+            (incoming_txs['transaction_type'] == 'SOL_TRANSFER') |
+            (incoming_txs['token_mint_address'].isna()) |
+            (incoming_txs['token_mint_address'] == '') |
+            (incoming_txs['token_mint_address'] == 'So11111111111111111111111111111111111111112')
+        ]
+        total_sol_stolen = sol_txs['amount'].sum()
+        
+        # USDC Transfer (alamat mint USDC di Solana)
+        usdc_mint_addresses = [
+            'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',  # USDC
+            'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',  # USDT (juga dihitung sebagai stablecoin)
+        ]
+        
+        usdc_txs = incoming_txs[incoming_txs['token_mint_address'].isin(usdc_mint_addresses)]
+        total_usdc_stolen = usdc_txs['amount'].sum()
+    
+    log_info(f"Total SOL dicuri: {total_sol_stolen:.6f}")
+    log_info(f"Total USDC/Stablecoin dicuri: {total_usdc_stolen:.2f}")
+    
+    # 4. Diversitas Aset
+    asset_diversity = incoming_txs['token_mint_address'].nunique() if not incoming_txs.empty else 0
+    log_info(f"Diversitas aset: {asset_diversity}")
+    
+    # 5. Total Aliran Dana & Node
+    total_links = len(df)  # Total transaksi
+    
+    # Hitung total alamat unik (nodes)
+    all_addresses = set()
+    all_addresses.update(df['source_address'].unique())
+    all_addresses.update(df['destination_address'].unique())
+    total_nodes = len(all_addresses)
+    
+    log_info(f"Total links (transaksi): {total_links}")
+    log_info(f"Total nodes (alamat unik): {total_nodes}")
+    
+    return {
+        'total_victims': total_victims,
+        'burst_index': burst_index,
+        'total_sol_stolen': float(total_sol_stolen),
+        'total_usdc_stolen': float(total_usdc_stolen),
+        'asset_diversity': asset_diversity,
+        'total_links': total_links,
+        'total_nodes': total_nodes
+    }
+
+# =============================================================================
 # FUNGSI GENERASI GRAF JSON
 # =============================================================================
 
-def generate_graph_data(df: pd.DataFrame, target_address: str, heuristic_results: Dict[str, Any] = None) -> Dict[str, Any]:
+def generate_graph_data(df: pd.DataFrame, target_address: str, heuristic_results: Dict[str, Any] = None, metrics: Dict[str, Any] = None) -> Dict[str, Any]:
     """
     Menghasilkan data graf dalam format JSON untuk visualisasi 3D.
     
@@ -213,6 +303,7 @@ def generate_graph_data(df: pd.DataFrame, target_address: str, heuristic_results
         df (pd.DataFrame): DataFrame transaksi
         target_address (str): Alamat drainer yang menjadi pusat graf
         heuristic_results (Dict[str, Any], optional): Hasil analisis heuristik untuk menentukan tipologi serangan
+        metrics (Dict[str, Any], optional): Metrik kuantitatif yang dihitung dari data
         
     Returns:
         Dict[str, Any]: Data graf dalam format yang sesuai untuk library 3D
@@ -253,10 +344,10 @@ def generate_graph_data(df: pd.DataFrame, target_address: str, heuristic_results
         nodes.append({
             "id": address,
             "name": node_name,
-            "val": node_val,
+            "val": int(node_val),
             "type": node_type,
-            "incoming_count": incoming_count,
-            "outgoing_count": outgoing_count
+            "incoming_count": int(incoming_count),
+            "outgoing_count": int(outgoing_count)
         })
     
     # Buat links berdasarkan transaksi
@@ -275,8 +366,8 @@ def generate_graph_data(df: pd.DataFrame, target_address: str, heuristic_results
         links.append({
             "source": source,
             "target": target,
-            "value": tx_count,  # Jumlah transaksi sebagai weight
-            "total_amount": float(total_amount) if pd.notna(total_amount) else 0
+            "value": int(tx_count),  # Jumlah transaksi sebagai weight
+            "total_amount": float(total_amount) if pd.notna(total_amount) else 0.0
         })
     
     # Tentukan tipologi serangan berdasarkan hasil heuristik
@@ -284,16 +375,35 @@ def generate_graph_data(df: pd.DataFrame, target_address: str, heuristic_results
     if heuristic_results is not None:
         attack_typology = determine_attack_typology(heuristic_results)
     
+    # Buat metadata yang kaya dengan data kuantitatif
+    metadata = {
+        "drainer_address": target_address,
+        "attack_typology": attack_typology,
+        "generated_at": datetime.now().isoformat()
+    }
+    
+    # Tambahkan metrik kuantitatif jika tersedia
+    if metrics is not None:
+        metadata.update({
+            "total_victims": metrics['total_victims'],
+            "burst_index": metrics['burst_index'],
+            "total_sol_stolen": metrics['total_sol_stolen'],
+            "total_usdc_stolen": metrics['total_usdc_stolen'],
+            "asset_diversity": metrics['asset_diversity'],
+            "total_links": metrics['total_links'],
+            "total_nodes": metrics['total_nodes']
+        })
+    else:
+        # Fallback ke perhitungan sederhana jika metrics tidak tersedia
+        metadata.update({
+            "total_nodes": len(nodes),
+            "total_links": len(links)
+        })
+    
     graph_data = {
         "nodes": nodes,
         "links": links,
-        "metadata": {
-            "drainer_address": target_address,
-            "attack_typology": attack_typology,
-            "total_nodes": len(nodes),
-            "total_links": len(links),
-            "generated_at": datetime.now().isoformat()
-        }
+        "metadata": metadata
     }
     
     log_info(f"Graf berhasil dibuat: {len(nodes)} nodes, {len(links)} links")
@@ -331,6 +441,29 @@ def determine_attack_typology(heuristic_results: Dict[str, Any]) -> str:
     else:
         return " + ".join(typologies)
 
+def convert_to_json_serializable(obj):
+    """
+    Mengkonversi objek pandas/numpy ke tipe data yang bisa di-serialize ke JSON.
+    
+    Args:
+        obj: Objek yang akan dikonversi
+        
+    Returns:
+        Objek yang bisa di-serialize ke JSON
+    """
+    if isinstance(obj, (np.integer, np.int64)):
+        return int(obj)
+    elif isinstance(obj, (np.floating, np.float64)):
+        return float(obj)
+    elif isinstance(obj, np.ndarray):
+        return obj.tolist()
+    elif isinstance(obj, dict):
+        return {key: convert_to_json_serializable(value) for key, value in obj.items()}
+    elif isinstance(obj, list):
+        return [convert_to_json_serializable(item) for item in obj]
+    else:
+        return obj
+
 def save_graph_json(graph_data: Dict[str, Any], target_address: str) -> str:
     """
     Menyimpan data graf ke file JSON.
@@ -347,8 +480,11 @@ def save_graph_json(graph_data: Dict[str, Any], target_address: str) -> str:
     filepath = os.path.join(os.getcwd(), filename)
     
     try:
+        # Konversi data ke format yang aman untuk JSON
+        safe_graph_data = convert_to_json_serializable(graph_data)
+        
         with open(filepath, 'w', encoding='utf-8') as f:
-            json.dump(graph_data, f, indent=2, ensure_ascii=False)
+            json.dump(safe_graph_data, f, indent=2, ensure_ascii=False)
         
         log_info(f"File graf JSON berhasil disimpan: {filepath}")
         return filepath
@@ -356,6 +492,124 @@ def save_graph_json(graph_data: Dict[str, Any], target_address: str) -> str:
     except Exception as e:
         log_info(f"Error saat menyimpan file JSON: {e}")
         raise
+
+# =============================================================================
+# FUNGSI PERHITUNGAN METRIK KUANTITATIF
+# =============================================================================
+
+def calculate_all_metrics(df: pd.DataFrame, drainer_address: str) -> Dict[str, Any]:
+    """
+    Menghitung semua metrik kuantitatif berdasarkan data transaksi aktual.
+    
+    Args:
+        df (pd.DataFrame): DataFrame transaksi
+        drainer_address (str): Alamat drainer yang dianalisis
+        
+    Returns:
+        Dict[str, Any]: Dictionary berisi semua metrik kuantitatif
+    """
+    log_info("Menghitung metrik kuantitatif dari data transaksi...")
+    
+    # Filter transaksi yang masuk ke drainer
+    incoming_to_drainer = df[df['destination_address'] == drainer_address].copy()
+    
+    # 1. Total Korban Terdampak
+    total_victims = incoming_to_drainer['source_address'].nunique()
+    log_info(f"Total korban terdampak: {total_victims}")
+    
+    # 2. Indeks Ledakan Transaksi
+    burst_index = 0
+    if not incoming_to_drainer.empty and 'timestamp_utc' in incoming_to_drainer.columns:
+        # Pastikan timestamp dalam format datetime
+        if not pd.api.types.is_datetime64_any_dtype(incoming_to_drainer['timestamp_utc']):
+            incoming_to_drainer['timestamp_utc'] = pd.to_datetime(incoming_to_drainer['timestamp_utc'])
+        
+        # Kelompokkan per jam dan hitung korban unik per jam
+        hourly_victims = (incoming_to_drainer
+                         .groupby(incoming_to_drainer['timestamp_utc'].dt.floor('h'))
+                         ['source_address']
+                         .nunique())
+        
+        if not hourly_victims.empty:
+            burst_index = hourly_victims.max()
+    
+    log_info(f"Indeks ledakan transaksi: {burst_index}")
+    
+    # 3. Estimasi Kerugian SOL
+    total_sol_stolen = 0.0
+    sol_transactions = incoming_to_drainer[
+        (incoming_to_drainer['transaction_type'] == 'NATIVE_TRANSFER') |
+        (incoming_to_drainer['token_mint_address'].isna()) |
+        (incoming_to_drainer['token_mint_address'] == '') |
+        (incoming_to_drainer['token_mint_address'] == 'So11111111111111111111111111111111111111112')  # Wrapped SOL
+    ]
+    
+    if not sol_transactions.empty and 'amount' in sol_transactions.columns:
+        total_sol_stolen = sol_transactions['amount'].sum()
+    
+    log_info(f"Total SOL yang dicuri: {total_sol_stolen:.6f}")
+    
+    # 4. Estimasi Kerugian USDC
+    total_usdc_stolen = 0.0
+    # USDC mint address di Solana
+    usdc_mint_addresses = [
+        'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',  # USDC
+        'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB'   # USDT (juga dihitung sebagai stablecoin)
+    ]
+    
+    usdc_transactions = incoming_to_drainer[
+        incoming_to_drainer['token_mint_address'].isin(usdc_mint_addresses)
+    ]
+    
+    if not usdc_transactions.empty and 'amount' in usdc_transactions.columns:
+        total_usdc_stolen = usdc_transactions['amount'].sum()
+    
+    log_info(f"Total USDC/USDT yang dicuri: {total_usdc_stolen:.2f}")
+    
+    # 5. Diversitas Aset
+    asset_diversity = 0
+    if 'token_mint_address' in incoming_to_drainer.columns:
+        # Hitung token unik, termasuk SOL native
+        unique_tokens = set()
+        
+        # Tambahkan SOL native jika ada transaksi native
+        if len(sol_transactions) > 0:
+            unique_tokens.add('SOL_NATIVE')
+        
+        # Tambahkan token mint addresses yang tidak kosong
+        token_mints = incoming_to_drainer['token_mint_address'].dropna()
+        token_mints = token_mints[token_mints != '']
+        unique_tokens.update(token_mints.unique())
+        
+        asset_diversity = len(unique_tokens)
+    
+    log_info(f"Diversitas aset: {asset_diversity}")
+    
+    # 6. Total Aliran Dana & Node
+    total_links = len(df)
+    
+    # Hitung total alamat unik
+    all_addresses = set()
+    all_addresses.update(df['source_address'].unique())
+    all_addresses.update(df['destination_address'].unique())
+    total_nodes = len(all_addresses)
+    
+    log_info(f"Total links (transaksi): {total_links}")
+    log_info(f"Total nodes (alamat unik): {total_nodes}")
+    
+    # Kembalikan semua metrik dengan konversi tipe data yang aman untuk JSON
+    metrics = {
+        'total_victims': int(total_victims),
+        'burst_index': int(burst_index),
+        'total_sol_stolen': float(total_sol_stolen),
+        'total_usdc_stolen': float(total_usdc_stolen),
+        'asset_diversity': int(asset_diversity),
+        'total_links': int(total_links),
+        'total_nodes': int(total_nodes)
+    }
+    
+    log_info("Perhitungan metrik kuantitatif selesai!")
+    return metrics
 
 # =============================================================================
 # FUNGSI ANALISIS UTAMA
@@ -503,8 +757,11 @@ def main():
         if result['is_drainer']:
             log_info("Validasi drainer terpenuhi! Membuat file graf JSON...")
             
-            # Generate data graf dengan hasil heuristik
-            graph_data = generate_graph_data(df, args.address, result)
+            # Hitung semua metrik kuantitatif dari data
+            metrics = calculate_all_metrics(df, args.address)
+            
+            # Generate data graf dengan hasil heuristik dan metrik
+            graph_data = generate_graph_data(df, args.address, result, metrics)
             
             # Simpan ke file JSON
             json_filepath = save_graph_json(graph_data, args.address)
@@ -514,10 +771,15 @@ def main():
             print("="*60)
             print(f"📁 File Path: {json_filepath}")
             print(f"🏷️ Attack Typology: {graph_data['metadata']['attack_typology']}")
+            print(f"👥 Total Victims: {graph_data['metadata'].get('total_victims', 'N/A')}")
+            print(f"💥 Burst Index: {graph_data['metadata'].get('burst_index', 'N/A')}")
+            print(f"🪙 SOL Stolen: {graph_data['metadata'].get('total_sol_stolen', 0):.6f}")
+            print(f"💰 USDC Stolen: {graph_data['metadata'].get('total_usdc_stolen', 0):.2f}")
+            print(f"🎯 Asset Diversity: {graph_data['metadata'].get('asset_diversity', 'N/A')}")
             print(f"📊 Total Nodes: {graph_data['metadata']['total_nodes']}")
             print(f"🔗 Total Links: {graph_data['metadata']['total_links']}")
             print(f"⏰ Generated At: {graph_data['metadata']['generated_at']}")
-            print("\n💡 File ini dapat digunakan untuk visualisasi 3D graf transaksi.")
+            print("\n💡 File ini berisi data kuantitatif lengkap untuk visualisasi 3D graf transaksi.")
             print("="*60)
         
         log_info("Analisis selesai!")
