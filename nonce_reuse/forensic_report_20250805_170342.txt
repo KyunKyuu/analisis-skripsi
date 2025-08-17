@@ -1,0 +1,138 @@
+====================================================================================================
+LAPORAN FORENSIK NONCE REUSE ANALYSIS - SOLANA BLOCKCHAIN
+====================================================================================================
+Timestamp: 2025-08-05 17:03:42
+Analyst: Forensic Blockchain Analyzer
+Scope: Multi-Exchange Nonce Reuse Detection
+====================================================================================================
+
+EXECUTIVE SUMMARY
+--------------------------------------------------
+• Total Signatures Analyzed: 86,045
+• Total Duplicate R Components: 115
+• Average Duplicate Rate: 0.3153%
+• Exchanges Analyzed: 3
+• High Risk Exchanges: 0
+
+DETAILED ANALYSIS PER EXCHANGE
+==================================================
+
+EXCHANGE: BYBIT
+------------------------------
+File: nonce_forensic_log_100k_bybit.csv
+Total Signatures: 2,765
+Unique R Components: 2,760
+Duplicate R Components: 5
+Duplicate Rate: 0.1812%
+Risk Level: RENDAH
+Risk Score: 20/100
+Risk Factors:
+  - Duplikasi komponen R ditemukan
+
+Statistical Analysis:
+  Chi-Squared Statistic: 256.170344
+  P-Value: 0.467618
+  Interpretation: RANDOM
+  Shannon Entropy: 3.9999
+  Entropy Ratio: 100.00%
+
+Message Hash Analysis:
+  Unique Messages: 2,760
+  Duplicate Messages: 5
+  Message Duplicate Rate: 0.1812%
+
+==================================================
+
+EXCHANGE: JUPITER
+------------------------------
+File: nonce_forensic_log_100k_jup.csv
+Total Signatures: 68,996
+Unique R Components: 68,994
+Duplicate R Components: 2
+Duplicate Rate: 0.0029%
+Risk Level: RENDAH
+Risk Score: 20/100
+Risk Factors:
+  - Duplikasi komponen R ditemukan
+
+Statistical Analysis:
+  Chi-Squared Statistic: 250.115137
+  P-Value: 0.574612
+  Interpretation: RANDOM
+  Shannon Entropy: 4.0000
+  Entropy Ratio: 100.00%
+
+Message Hash Analysis:
+  Unique Messages: 68,994
+  Duplicate Messages: 2
+  Message Duplicate Rate: 0.0029%
+
+==================================================
+
+EXCHANGE: OKX
+------------------------------
+File: nonce_forensic_log_100k_okx.csv
+Total Signatures: 14,284
+Unique R Components: 14,176
+Duplicate R Components: 108
+Duplicate Rate: 0.7619%
+Risk Level: RENDAH
+Risk Score: 20/100
+Risk Factors:
+  - Duplikasi komponen R ditemukan
+
+Statistical Analysis:
+  Chi-Squared Statistic: 282.693923
+  P-Value: 0.112413
+  Interpretation: RANDOM
+  Shannon Entropy: 4.0000
+  Entropy Ratio: 100.00%
+
+Message Hash Analysis:
+  Unique Messages: 14,176
+  Duplicate Messages: 108
+  Message Duplicate Rate: 0.7619%
+
+==================================================
+
+COMPARATIVE ANALYSIS
+==============================
+Exchange        Total Sig    Unique R     Dup R    Dup Rate     Risk      
+--------------------------------------------------------------------------------
+BYBIT           2,765        2,760        5        0.1812      % RENDAH    
+JUPITER         68,996       68,994       2        0.0029      % RENDAH    
+OKX             14,284       14,176       108      0.7619      % RENDAH    
+
+STATISTICAL SUMMARY
+------------------------------
+Duplicate Rate Statistics:
+  Mean: 0.3153%
+  Std Dev: 0.3240%
+  Min: 0.0029%
+  Max: 0.7619%
+
+Entropy Statistics:
+  Mean Entropy Ratio: 100.00%
+  Std Dev: 0.00%
+
+Chi-Squared P-Value Statistics:
+  Mean P-Value: 0.384881
+  Min P-Value: 0.112413
+  Max P-Value: 0.574612
+
+
+CONCLUSIONS AND RECOMMENDATIONS
+========================================
+✅ OVERALL ASSESSMENT: LOW RISK
+All analyzed exchanges show acceptable levels of nonce randomness.
+No significant nonce reuse vulnerabilities detected.
+
+RECOMMENDATIONS:
+• Continue routine monitoring
+• Maintain current security practices
+• Schedule periodic re-assessment
+
+
+Report generated on: 2025-08-05 17:03:42
+End of Report
+====================================================================================================

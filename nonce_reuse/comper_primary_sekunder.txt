@@ -1,0 +1,159 @@
+====================================================================================================
+ANALISIS KOMPREHENSIF NONCE REUSE
+DATA EKSPERIMENTAL VS DATA REAL-WORLD
+====================================================================================================
+Timestamp: 2025-08-06 09:52:53
+Analyst: Forensic Blockchain Analyzer
+
+RINGKASAN EKSEKUTIF
+------------------------------
+Data Eksperimental: 3 file CSV
+Data Real-world: 3 file CSV
+Total Signatures Analyzed: 1,527,049
+Total Duplikasi Detected: 371
+
+DETAIL ANALISIS DATA EKSPERIMENTAL
+==================================================
+Total Files: 3
+Total Signatures: 1,500,000
+Total Unique R: 1,499,056
+Total Duplicate R: 256
+Average Duplicate Rate: 0.0171%
+Average Risk Score: 16.7/100
+
+FILE: nonce_forensic_bit-flip_500k.csv
+-------------------------------------
+  Total Signatures: 500,000
+  Unique R Components: 499,056
+  Duplicate R Components: 256
+  Duplicate Rate: 0.0513%
+  Chi-Squared Statistic: 294.107136
+  P-Value: 0.500000
+  Interpretation: RANDOM
+  Shannon Entropy: 4.0000
+  Entropy Ratio: 100.00%
+  Repeated Prefixes: 281
+  Risk Score: 30/100
+  Risk Level: SEDANG
+  Risk Factors: Duplikasi komponen R ditemukan, Banyak pola berulang
+
+FILE: nonce_forensic_amount_500k.csv
+-----------------------------------
+  Total Signatures: 500,000
+  Unique R Components: 500,000
+  Duplicate R Components: 0
+  Duplicate Rate: 0.0000%
+  Chi-Squared Statistic: 206.600192
+  P-Value: 0.700000
+  Interpretation: RANDOM
+  Shannon Entropy: 4.0000
+  Entropy Ratio: 100.00%
+  Repeated Prefixes: 13
+  Risk Score: 10/100
+  Risk Level: RENDAH
+  Risk Factors: Banyak pola berulang
+
+FILE: nonce_forensic_random_500k.csv
+-----------------------------------
+  Total Signatures: 500,000
+  Unique R Components: 500,000
+  Duplicate R Components: 0
+  Duplicate Rate: 0.0000%
+  Chi-Squared Statistic: 206.600192
+  P-Value: 0.700000
+  Interpretation: RANDOM
+  Shannon Entropy: 4.0000
+  Entropy Ratio: 100.00%
+  Repeated Prefixes: 13
+  Risk Score: 10/100
+  Risk Level: RENDAH
+  Risk Factors: Banyak pola berulang
+
+DETAIL ANALISIS DATA REAL-WORLD
+========================================
+Total Files: 3
+Total Signatures: 27,049
+Total Unique R: 26,934
+Total Duplicate R: 115
+Average Duplicate Rate: 0.4270%
+Average Risk Score: 23.3/100
+
+FILE: nonce_forensic_log_100k_bybit.csv
+--------------------------------------
+  Total Signatures: 2,765
+  Unique R Components: 2,760
+  Duplicate R Components: 5
+  Duplicate Rate: 0.1812%
+  Chi-Squared Statistic: 256.170344
+  P-Value: 0.500000
+  Interpretation: RANDOM
+  Shannon Entropy: 3.9999
+  Entropy Ratio: 100.00%
+  Repeated Prefixes: 5
+  Risk Score: 20/100
+  Risk Level: RENDAH
+  Risk Factors: Duplikasi komponen R ditemukan
+
+FILE: nonce_forensic_log_100k_okx.csv
+------------------------------------
+  Total Signatures: 14,284
+  Unique R Components: 14,176
+  Duplicate R Components: 108
+  Duplicate Rate: 0.7619%
+  Chi-Squared Statistic: 282.693923
+  P-Value: 0.500000
+  Interpretation: RANDOM
+  Shannon Entropy: 4.0000
+  Entropy Ratio: 100.00%
+  Repeated Prefixes: 108
+  Risk Score: 30/100
+  Risk Level: SEDANG
+  Risk Factors: Duplikasi komponen R ditemukan, Banyak pola berulang
+
+FILE: nonce_forensic_log_jup.csv
+-------------------------------
+  Total Signatures: 10,000
+  Unique R Components: 9,998
+  Duplicate R Components: 2
+  Duplicate Rate: 0.0200%
+  Chi-Squared Statistic: 269.542400
+  P-Value: 0.500000
+  Interpretation: RANDOM
+  Shannon Entropy: 4.0000
+  Entropy Ratio: 100.00%
+  Repeated Prefixes: 2
+  Risk Score: 20/100
+  Risk Level: RENDAH
+  Risk Factors: Duplikasi komponen R ditemukan
+
+ANALISIS KOMPARATIF
+=========================
+METRIK                              EKSPERIMENTAL        REAL-WORLD           SELISIH        
+------------------------------------------------------------------------------------------
+Total Signatures                    1,500,000            27,049               +1,472,951     
+Total Unique R                      1,499,056            26,934               +1,472,122     
+Total Duplicate R                   256                  115                  +141           
+Avg Duplicate Rate (%)              0.0171               0.4270               -0.4099        
+Avg Risk Score                      16.6667              23.3333              -6.6667        
+
+KESIMPULAN DAN REKOMENDASI
+===================================
+1. TEMUAN UTAMA:
+   - Data eksperimental menunjukkan rata-rata risk score 16.7/100
+   - Data real-world menunjukkan rata-rata risk score 23.3/100
+   - Total 371 duplikasi R terdeteksi
+   - Tingkat duplikasi eksperimental: 0.0171%
+   - Tingkat duplikasi real-world: 0.4270%
+
+2. INTERPRETASI:
+   - Data real-world menunjukkan risiko setara atau lebih tinggi dari eksperimental
+   - Implementasi exchange memerlukan perbaikan keamanan
+
+3. REKOMENDASI:
+   - Lakukan monitoring berkala pada implementasi nonce generation
+   - Implementasikan sistem deteksi duplikasi real-time
+   - Tingkatkan entropi dalam proses pembangkitan nonce
+   - Lakukan audit keamanan rutin pada exchange
+
+End of Report
+====================================================================================================

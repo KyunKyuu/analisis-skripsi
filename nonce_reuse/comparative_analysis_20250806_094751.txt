@@ -1,0 +1,53 @@
+====================================================================================================
+ANALISIS KOMPARATIF NONCE REUSE - DATA PRIMER VS SEKUNDER
+====================================================================================================
+Timestamp: 2025-08-06 09:47:51
+Analyst: Forensic Blockchain Analyzer
+
+RINGKASAN EKSEKUTIF
+------------------------------
+Data Primer (Eksperimental): nonce_forensic_bit-flip_500k.csv
+Data Sekunder (Real-world): nonce_forensic_log_100k_bybit.csv
+Total Signatures Analyzed: 502,765
+
+DETAIL HASIL ANALISIS
+==============================
+
+DATA PRIMER
+-----------
+File: nonce_forensic_bit-flip_500k.csv
+Dataset Type: Data Primer (Eksperimental)
+Total Signatures: 500,000
+Unique R Components: 499,056
+Duplicate R Components: 256
+Duplicate Rate: 0.0513%
+Chi-Squared Statistic: 294.107136
+P-Value: 0.500000
+Interpretation: RANDOM
+Shannon Entropy: 4.0000
+Entropy Ratio: 100.00%
+Repeated Prefixes: 281
+Risk Score: 30/100
+Risk Level: SEDANG
+Risk Factors: Duplikasi komponen R ditemukan, Banyak pola berulang
+
+DATA SEKUNDER
+-------------
+File: nonce_forensic_log_100k_bybit.csv
+Dataset Type: Data Sekunder (Real-world)
+Total Signatures: 2,765
+Unique R Components: 2,760
+Duplicate R Components: 5
+Duplicate Rate: 0.1812%
+Chi-Squared Statistic: 256.170344
+P-Value: 0.500000
+Interpretation: RANDOM
+Shannon Entropy: 3.9999
+Entropy Ratio: 100.00%
+Repeated Prefixes: 5
+Risk Score: 20/100
+Risk Level: RENDAH
+Risk Factors: Duplikasi komponen R ditemukan
+
+End of Report
+====================================================================================================

@@ -1,0 +1,17 @@
+a. Skenario Manipulasi Standar
+
+Pengujian ini mencoba trik malleability yang paling umum. Triknya adalah mengganti komponen S dari signature dengan "kembaran negatif"-nya. Ini bisa dilakukan karena dalam matematika kurva eliptik, seringkali ada dua nilai S (satu positif, satu negatif) yang bisa dianggap benar untuk rumus pengecekan yang sama. Jika Solana tidak cukup teliti, ia bisa saja menerima signature "kembaran" ini, yang akan menyebabkan ID Transaksi berubah. Tes ini memastikan Solana cukup pintar untuk menolak kembaran tersebut.
+
+Implementasi Teknis
+(Blok kode Anda akan masuk di sini)
+
+b. Skenario Manipulasi Non-Kanonis
+
+Pengujian ini bertujuan untuk memastikan Solana mengikuti aturan format resmi. Dalam perhitungan seperti pada jam, jam 3 dan jam 15 itu sama. Demikian pula, nilai S dan S + L secara matematis adalah solusi yang sama untuk rumus pengecekan. Namun, aturannya adalah kita harus selalu menggunakan nilai yang terkecil (S). Triknya adalah mengirim transaksi menggunakan nilai yang lebih besar (S + L). Tes ini memvalidasi bahwa Solana secara tegas menolak format yang tidak resmi ini untuk mencegah kebingungan.
+
+Implementasi Teknis
+(Blok kode Anda akan masuk di sini)
+
+c. Skenario Manipulasi Komponen R
+
+Pengujian ini pada dasarnya mencoba merusak separuh bagian pertama dari signature. Tanda tangan terdiri dari dua bagian, R dan S, yang saling terhubung secara matematis. Jika kita mengubah sedikit saja bagian R (bahkan satu bit), maka seluruh "rumus" pengecekannya akan menjadi salah dan gagal total. Tes ini membuktikan bahwa kedua bagian signature harus asli dan tidak diubah sama sekali agar bisa diterima.

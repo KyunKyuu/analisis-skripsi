@@ -27,7 +27,7 @@ from solana.rpc.types import TxOpts
 # === Konfigurasi ===
 TRANSFER_AMOUNT_LAMPORTS = 5000000  # 0.005 SOL
 RECIPIENT_ADDRESS = None  # None = self-transfer
-CSV_FILENAME = "race_condition_summary2.csv"
+CSV_FILENAME = "race_condition_summary.csv"
 CSV_HEADERS = [
     "timestamp_utc", "run_id", "task_id", "submission_status", 
     "returned_signature", "submission_response", "submission_timing_ms"
