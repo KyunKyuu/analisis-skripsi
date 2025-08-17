@@ -543,10 +543,11 @@ def analyze_nonce_reuse():
     
     # Opsi file CSV yang tersedia
     available_files = {
-        "1": "nonce_forensic_log_100k_bybit.csv",
-        "2": "nonce_forensic_log_100k_jup.csv", 
-        "3": "nonce_forensic_log_100k_okx.csv",
-        "4" : "nonce_forensic_log_100k_phantom.csv"
+        "1": "csv/nonce_forensic_log_100k_bybit.csv",
+        "2": "csv/nonce_forensic_log_100k_jup.csv", 
+        "3": "csv/nonce_forensic_log_100k_okx.csv",
+        "4" : "csv/nonce_forensic_log_100k_phantom.csv"
+
     }
     
     print("\n📂 FILE CSV YANG TERSEDIA:")
